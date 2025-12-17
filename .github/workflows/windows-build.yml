@@ -11,24 +11,35 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
+        
+
+      - name: Configure with CMake
+        run: |
+          git clone https://github.com/ValveSoftware/GameNetworkingSockets.git
+        shell: bash
 
       - name: Clone vcpkg
-        run: git clone https://github.com/microsoft/vcpkg
+        run: |
+          cd GameNetworkingSockets
+          git clone https://github.com/microsoft/vcpkg
         shell: bash
 
       - name: Bootstrap vcpkg (run .bat from bash via cmd.exe)
-        run: cmd.exe /c ".\\vcpkg\\bootstrap-vcpkg.bat"
+        run: |
+          cd GameNetworkingSockets
+          cmd.exe /c ".\\vcpkg\\bootstrap-vcpkg.bat"
         shell: bash
 
       - uses: ilammy/msvc-dev-cmd@v1
 
       - name: Install libraries with vcpkg
-        run: cmd.exe /c ".\\vcpkg\\vcpkg.exe install --triplet=x64-windows"
+        run: |
+          cd GameNetworkingSockets
+          cmd.exe /c ".\\vcpkg\\vcpkg.exe install --triplet=x64-windows"
         shell: bash
 
       - name: Configure with CMake
         run: |
-          git clone https://github.com/ValveSoftware/GameNetworkingSockets.git
           cd GameNetworkingSockets
           cmake -S . -B build -G Ninja
           cmake -S . -B build -G Ninja -DBUILD_EXAMPLES=ON -DBUILD_TESTS=ON -DUSE_STEAMWEBRTC=ON
