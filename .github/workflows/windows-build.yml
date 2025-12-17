@@ -20,18 +20,23 @@ jobs:
         run: cmd.exe /c ".\\vcpkg\\bootstrap-vcpkg.bat"
         shell: bash
 
+      - uses: ilammy/msvc-dev-cmd@v1
+
       - name: Install libraries with vcpkg
         run: cmd.exe /c ".\\vcpkg\\vcpkg.exe install --triplet=x64-windows"
         shell: bash
 
       - name: Configure with CMake
         run: |
+          git clone https://github.com/ValveSoftware/GameNetworkingSockets.git
+          cd GameNetworkingSockets
           cmake -S . -B build -G Ninja
           cmake -S . -B build -G Ninja -DBUILD_EXAMPLES=ON -DBUILD_TESTS=ON -DUSE_STEAMWEBRTC=ON
         shell: bash
 
       - name: Build
         run: |
+          cd GameNetworkingSockets
           cd build
           ninja
         shell: bash
