@@ -1,8 +1,12 @@
 name: Windows build (bash)
 
 on:
-  push:
-  pull_request:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag'
+        required: true
+        type: string
 
 permissions:
   contents: write
@@ -15,45 +19,43 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
         
-
       - name: Configure with CMake
+        shell: bash
         run: |
           git clone https://github.com/ValveSoftware/GameNetworkingSockets.git
-        shell: bash
 
       - name: Clone vcpkg
+        shell: bash
         run: |
           cd GameNetworkingSockets
           git clone https://github.com/microsoft/vcpkg
-        shell: bash
 
       - name: Bootstrap vcpkg (run .bat from bash via cmd.exe)
+        shell: bash
         run: |
           cd GameNetworkingSockets
           cmd.exe /c ".\\vcpkg\\bootstrap-vcpkg.bat"
-        shell: bash
 
       - uses: ilammy/msvc-dev-cmd@v1
 
       - name: Install libraries with vcpkg
+        shell: bash
         run: |
           cd GameNetworkingSockets
           cmd.exe /c ".\\vcpkg\\vcpkg.exe install --triplet=x64-windows"
-        shell: bash
 
       - name: Configure with CMake
+        shell: bash
         run: |
           cd GameNetworkingSockets
-          cmake -S . -B build -G Ninja
           cmake -S . -B build -G Ninja -DBUILD_EXAMPLES=ON -DBUILD_TESTS=ON -DUSE_STEAMWEBRTC=ON
-        shell: bash
 
       - name: Build
+        shell: bash
         run: |
           cd GameNetworkingSockets
           cd build
           ninja
-        shell: bash
 
       - name: Copy Release Files
         shell: bash
