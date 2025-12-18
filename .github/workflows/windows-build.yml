@@ -65,7 +65,7 @@ jobs:
           mkdir lib
           mkdir bin
 
-          cp -a "$curDir/GameNetworkingSockets/include/" "include/"
+          cp -a "$curDir/GameNetworkingSockets/include/" "."
           find "$curDir/GameNetworkingSockets/build/src" -type f \( -name '*.lib' \) -print0 | xargs -0 -I{} cp {} lib/
           find "$curDir/GameNetworkingSockets/build/bin" -type f \( -name '*.dll' \) -print0 | xargs -0 -I{} cp {} bin/
 
