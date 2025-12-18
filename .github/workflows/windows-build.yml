@@ -18,11 +18,8 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
-        
-      - name: Configure with CMake
-        shell: bash
-        run: |
-          git clone https://github.com/ValveSoftware/GameNetworkingSockets.git
+        with:
+          submodules: 'recursive'
 
       - name: Clone vcpkg
         shell: bash
@@ -30,13 +27,14 @@ jobs:
           cd GameNetworkingSockets
           git clone https://github.com/microsoft/vcpkg
 
-      - name: Bootstrap vcpkg (run .bat from bash via cmd.exe)
+      - name: Bootstrap vcpkg
         shell: bash
         run: |
           cd GameNetworkingSockets
           cmd.exe /c ".\\vcpkg\\bootstrap-vcpkg.bat"
 
-      - uses: ilammy/msvc-dev-cmd@v1
+      - name: Setup MSVC dev cmd
+        uses: ilammy/msvc-dev-cmd@v1
 
       - name: Install libraries with vcpkg
         shell: bash

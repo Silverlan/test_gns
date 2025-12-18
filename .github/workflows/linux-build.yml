@@ -18,11 +18,8 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
-
-      - name: Configure with CMake
-        shell: bash
-        run: |
-          git clone https://github.com/ValveSoftware/GameNetworkingSockets.git
+        with:
+          submodules: 'recursive'
 
       - name: Install dependencies
         shell: bash
@@ -37,6 +34,12 @@ jobs:
           mkdir build
           cd build
           cmake -G Ninja .. -DBUILD_EXAMPLES=ON -DBUILD_TESTS=ON -DUSE_STEAMWEBRTC=ON
+
+      - name: Build
+        shell: bash
+        run: |
+          cd GameNetworkingSockets
+          cd build
           ninja
 
       - name: Copy Release Files
