@@ -51,3 +51,23 @@ jobs:
           cd build
           ninja
         shell: bash
+
+      - name: Copy Release Files
+        shell: bash
+        run: |
+          curDir=$PWD
+          mkdir -p release
+          cd release
+          mkdir include
+          mkdir lib
+
+          cp -a "$curDir/GameNetworkingSockets/include/" "include/"
+          find "$curDir/GameNetworkingSockets/build/src" -type f \( -name '*.lib' \) -print0 | xargs -0 -I{} cp {} lib/
+          find "$curDir/GameNetworkingSockets/build/bin" -type f \( -name '*.dll' \) -print0 | xargs -0 -I{} cp {} bin/
+
+      - name: Release Binaries
+        uses: Silverlan/common_actions/release_nightly_binaries@main
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit: ${{ github.ref_name }}
+          tag: 'test'

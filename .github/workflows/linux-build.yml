@@ -32,3 +32,23 @@ jobs:
           cmake -G Ninja .. -DBUILD_EXAMPLES=ON -DBUILD_TESTS=ON -DUSE_STEAMWEBRTC=ON
           ninja
         shell: bash
+
+      - name: Copy Release Files
+        shell: bash
+        run: |
+          curDir=$PWD
+          mkdir -p release
+          cd release
+          mkdir include
+          mkdir lib
+
+          cp -a "$curDir/GameNetworkingSockets/include/" "include/"
+          find "$curDir/GameNetworkingSockets/build/src" -type f \( -name '*.a' -o -name '*.so' \) -print0 | xargs -0 -I{} cp {} lib/
+          find "$curDir/GameNetworkingSockets/build/bin" -type f \( -name '*.a' -o -name '*.so' \) -print0 | xargs -0 -I{} cp {} lib/
+
+      - name: Release Binaries
+        uses: Silverlan/common_actions/release_nightly_binaries@main
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit: ${{ github.ref_name }}
+          tag: 'test'
